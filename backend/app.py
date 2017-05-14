@@ -2,12 +2,17 @@ from flask import Flask
 from flask import render_template
 from flask import request
 
+from watson_developer_cloud import ConversationV1
+import json
+import pyaudio
+import speech_recognition as sr
+
 import json
 import simplejson as sjson
-hackbuddyapp=Flask(__name__, static_url_path = "/static", static_folder="static")
 
-with open('user_credentials.json') as datafile:
-  user_credentials=json.load(datafile)
+from Bot import speecher 
+
+hackbuddyapp=Flask(__name__, static_url_path = "/static", static_folder="static")
 
 backend_score = { "C++" :3, "Python":3, "Django":3}
 frontend_score = { "Ruby on Rails" :3, "JS":3, "Bootstrap": 3, "CSS":3}
@@ -90,7 +95,38 @@ def fillSurvey():
   with open('user_credentials.json', 'w') as datafile:
     json.dump(user_credentials, datafile)
   return render_template('Profile.html')
-  
+ 
+@hackbuddyapp.route('/chat',methods=['POST', 'GET'])
+def chat():
+  sp = speecher()
+  if request.method == "GET" :
+    msg=sp.voice()
+    print msg
+
+  return render_template('chat.html')
+
+@hackbuddyapp.route('/speak')
+def speak():
+  if request.method=="POST":
+    msg=voice()
+  return msg
+  return render_template('chat.html')
+
+
+#def call():
+#  client = nexmo.Client#(
+#           key=API_KEY,
+#           secret=API_SECRET,
+#           application_id=APPLICATION_ID#,
+#           private_key=PRIVATE_KEY
+#    )
+
+#    response = client.create_call({
+#      'to': [{'type': 'phone', 'number': TO_NUMBER}],
+#      'from': {'type': 'phone', 'number': FROM_NUMBER},
+#      'answer_url': ['https://nexmo-community.github.io/ncco-examples/first_call_talk.json']
+#    })
+
 
 @hackbuddyapp.route('/meet', methods=['POST'])
 def meet():
