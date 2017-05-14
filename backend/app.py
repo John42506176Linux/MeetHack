@@ -34,7 +34,7 @@ def signIn():
     else:
       return "Please Signup"
 
-@hackbuddyapp.route('/fillSurvey', methods=['POST'])
+@hackbuddyapp.route('/Profile', methods=['POST'])
 def fillSurvey():
   print request.path
   print request.form
@@ -89,7 +89,7 @@ def fillSurvey():
 
   with open('user_credentials.json', 'w') as datafile:
     json.dump(user_credentials, datafile)
-  return "Updated the Database" 
+  return render_template('Profile.html')
   
 
 @hackbuddyapp.route('/meet', methods=['POST'])
