@@ -9,6 +9,9 @@ hackbuddyapp=Flask(__name__)
 with open('user_credentials.json') as datafile:
   user_credentials=json.load(datafile)
 
+backend_score = { "C++" :3, "Python":3, "Django":3}
+frontend_score = { "Ruby on Rails" :3, "JS":3, "Bootstrap": 3, "CSS":3}
+
 @hackbuddyapp.route('/')
 def default():
   return render_template("default.html")
@@ -44,10 +47,47 @@ def fillSurvey():
       if "Phonenumber" in request.form:
         user_credentials[email]["Phonenumber"]=request.form["Phonenumber"]
 
+      if "Hackathons" in request.form:
+        user_credentials[email]["AttendedOtherHackathons"]=request.form["Hackathons"]
+
+      if "Teammates" in request.form:
+        user_credentials[email]["Teammates"]=request.form["Teammates"]
+
+      if "number" in request.form:
+        user_credentials[email]["NumberofHackathons"]=request.form["number"]
+
+      if "OtherHackathons" in request.form:
+        user_credentials[email]["OtherHackathons"]=request.form["OtherHackathons"]
+
       user_credentials[email]["Technologies"]= request.form.getlist("Technologies")
       user_credentials[email]["API"]=request.form.getlist("API")
       user_credentials[email]["Languages"] = request.form.getlist("Languages")
-  with open('new_user_credentials.json', 'w') as datafile:
+     
+      fs=0
+      bs=0
+
+      for skill in user_credentials[email]["Technologies"]:
+        if skill in backend_score:
+          bs=bs+ backend_score[skill]
+        if skill in frontend_score:
+          fs=fs+ frontend_score[skill]
+      
+      for skill in user_credentials[email]["API"]:
+        if skill in backend_score:
+          bs=bs+ backend_score[skill]
+        if skill in frontend_score:
+          fs=fs+ frontend_score[skill]
+
+      for skill in user_credentials[email]["Languages"]:
+        if skill in backend_score:
+          bs=bs+ backend_score[skill]
+        if skill in frontend_score:
+          fs=fs+ frontend_score[skill]
+
+      user_credentials[email]["Backend_score"] = bs
+      user_credentials[email]["Frontend_score"] = fs
+
+  with open('user_credentials.json', 'w') as datafile:
     json.dump(user_credentials, datafile)
   return "Updated the Database" 
   
