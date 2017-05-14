@@ -4,7 +4,7 @@ from flask import request
 
 import json
 import simplejson as sjson
-hackbuddyapp=Flask(__name__)
+hackbuddyapp=Flask(__name__, static_url_path = "/static", static_folder="static")
 
 with open('user_credentials.json') as datafile:
   user_credentials=json.load(datafile)
@@ -14,7 +14,7 @@ frontend_score = { "Ruby on Rails" :3, "JS":3, "Bootstrap": 3, "CSS":3}
 
 @hackbuddyapp.route('/')
 def default():
-  return render_template("default.html")
+  return render_template("index.html")
 
 @hackbuddyapp.route('/welcome', methods=['POST', 'GET'])
 def welcome():
@@ -34,7 +34,7 @@ def signIn():
     else:
       return "Please Signup"
 
-@hackbuddyapp.route('/fillSurvey', methods=['POST'])
+@hackbuddyapp.route('/Profile', methods=['POST'])
 def fillSurvey():
   print request.path
   print request.form
@@ -89,7 +89,7 @@ def fillSurvey():
 
   with open('user_credentials.json', 'w') as datafile:
     json.dump(user_credentials, datafile)
-  return "Updated the Database" 
+  return render_template('Profile.html')
   
 
 @hackbuddyapp.route('/meet', methods=['POST'])
